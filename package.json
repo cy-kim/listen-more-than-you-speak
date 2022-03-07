@@ -1,0 +1,19 @@
+{
+  "name": "troll-zoom",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "errorhandler": "^1.5.1",
+    "express": "^4.17.1",
+    "node-notifier": "^8.0.0",
+    "socket.io": "^2.3.0",
+    "underscore": "^1.11.0"
+  },
+  "author": "",
+  "license": "ISC"
+}
