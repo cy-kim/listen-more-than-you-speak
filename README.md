@@ -11,7 +11,8 @@ This is an alternative video calling platform. The longer you speak, the bigger 
 Deployment is currently down since Heroku's end to its free service.
 
 
-Stack: WebRTC (Simple Peer lib), Socket.io, Node (Express), JS, HTML, CSS, Heroku.
+# Stack
+WebRTC (Simple Peer lib), Socket.io, Node (Express), JS, HTML, CSS, Heroku.
 
 Please use incognito mode to avoid extensions interfering with the video call. 
 
