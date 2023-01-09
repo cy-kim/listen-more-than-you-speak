@@ -14,6 +14,8 @@ Deployment is currently down since Heroku's end to its free service.
 # Stack
 WebRTC (Simple Peer lib), Socket.io, Node (Express), JS, HTML, CSS, Heroku.
 
+# Notes
+
 Please use incognito mode to avoid extensions interfering with the video call. 
 
 Edge case: if your machine is on a network with symmetric NAT configuration, it will not work due to this project’s STUN server setup.
