@@ -1,9 +1,12 @@
+//128 is threshold for minimum volume
+//TODO: set average threshold before you enter the chat
 let myStream = null;
 //audio stuff
 let mySpokenFor = 0;
 let myVolume = 0;
 let simplepeers = [];
-var socket;
+let socket;
+let threshold = 127.8;
 
 // wait for window to load
 window.addEventListener("load", function () {
@@ -34,10 +37,35 @@ window.addEventListener("load", function () {
         audioContext.createMediaStreamSource(audioStream);
       const meter = audioContext.createAnalyser();
       mediaStreamSource.connect(meter);
+      let startTime;
+      let elapsedTime = 0;
+      let totalElapsedTime = 0;
+      let interval;
 
       setInterval(function () {
         const volume = calculateVolume(meter);
-        console.log("Volume:", volume);
+        if (volume > threshold && !interval) {
+          startTime = Math.floor(performance.now());
+          interval = setInterval(function () {
+            elapsedTime = Math.floor(performance.now()) - startTime;
+          }, 100);
+        }
+        if (volume <= threshold && interval) {
+          clearInterval(interval);
+          totalElapsedTime += elapsedTime;
+          console.log(totalElapsedTime);
+          elapsedTime = 0;
+          interval = null;
+        }
+
+        for (let i = 0; i < simplepeers.length; i++) {
+          if (simplepeers[i].hasConnected) {
+            simplepeers[i].simplepeer.send(
+              JSON.stringify({ myElapsedTime: totalElapsedTime })
+            );
+          }
+        }
+        resizeVideos();
       }, 200);
 
       // Now setup socket
@@ -130,37 +158,36 @@ function calculateVolume(meter) {
 //   }
 // }
 
-function mapRange(value, a, b, c, d) {
-  // first map value from (a..b) to (0..1)
-  value = (value - a) / (b - a);
-  // then map it from (0..1) to (c..d) and return it
-  return c + value * (d - c);
-}
+// function mapRange(value, a, b, c, d) {
+//   // first map value from (a..b) to (0..1)
+//   value = (value - a) / (b - a);
+//   // then map it from (0..1) to (c..d) and return it
+//   return c + value * (d - c);
+// }
 
 function resizeVideos() {
-  const scale = d3.scalePow().exponent(0.8).domain([0, 1]).range([10, 1000]);
-  let total =
-    mySpokenFor +
-    simplepeers.map((peer) => peer.spokenFor).reduce((a, b) => a + b, 0);
-
-  for (let i = 0; i < simplepeers.length; i++) {
-    // console.log(
-    //   `${simplepeers[i].socket_id} - ${simplepeers[i].spokenFor} - ${
-    //     simplepeers[i].spokenFor / total
-    //   }%`
-    // );
-    let el = document.getElementById(`${simplepeers[i].socket_id}`);
-    // console.log(scale(simplepeers[i].spokenFor / total));
-    if (el != null) {
-      el.style.width = scale(simplepeers[i].spokenFor / total);
-      el.style.height = scale(simplepeers[i].spokenFor / total);
-    }
-  }
-  let el = document.getElementById("myvideo");
-  if (el != null) {
-    el.style.width = scale(mySpokenFor / total);
-    el.style.height = scale(mySpokenFor / total);
-  }
+  // const scale = d3.scalePow().exponent(0.8).domain([0, 1]).range([10, 1000]);
+  // let total =
+  //   mySpokenFor +
+  //   simplepeers.map((peer) => peer.spokenFor).reduce((a, b) => a + b, 0);
+  // for (let i = 0; i < simplepeers.length; i++) {
+  //   // console.log(
+  //   //   `${simplepeers[i].socket_id} - ${simplepeers[i].spokenFor} - ${
+  //   //     simplepeers[i].spokenFor / total
+  //   //   }%`
+  //   // );
+  //   let el = document.getElementById(`${simplepeers[i].socket_id}`);
+  //   // console.log(scale(simplepeers[i].spokenFor / total));
+  //   if (el != null) {
+  //     el.style.width = scale(simplepeers[i].spokenFor / total);
+  //     el.style.height = scale(simplepeers[i].spokenFor / total);
+  //   }
+  // }
+  // let el = document.getElementById("myvideo");
+  // if (el != null) {
+  //   el.style.width = scale(mySpokenFor / total);
+  //   el.style.height = scale(mySpokenFor / total);
+  // }
 }
 
 /*Socket*/
