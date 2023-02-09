@@ -19,7 +19,6 @@ var httpServer = http.createServer(app);
 
 // Default HTTPS port
 httpServer.listen(process.env.PORT || 7000);
-console.log("listening on port: ", process.env.PORT);
 /* 
 This server simply keeps track of the peers all in one big "room"
 and relays signal messages back and forth.

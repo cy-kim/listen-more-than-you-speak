@@ -3,10 +3,15 @@
 let myStream = null;
 //audio stuff
 let mySpokenFor = 0;
-let myVolume = 0;
-let simplepeers = [];
+
+let simplepeers = [
+  { id: 0, myElapsedTime: 1000 },
+  { id: 1, myElapsedTime: 2000 },
+  { id: 2, myElapsedTime: 300 },
+];
 let socket;
 let threshold = 127.8;
+let myElapsedTime = 0;
 
 // wait for window to load
 window.addEventListener("load", function () {
@@ -38,8 +43,8 @@ window.addEventListener("load", function () {
       const meter = audioContext.createAnalyser();
       mediaStreamSource.connect(meter);
       let startTime;
-      let elapsedTime = 0;
-      let totalElapsedTime = 0;
+      let segmentElapsedTime = 0;
+
       let interval;
 
       setInterval(function () {
@@ -47,26 +52,31 @@ window.addEventListener("load", function () {
         if (volume > threshold && !interval) {
           startTime = Math.floor(performance.now());
           interval = setInterval(function () {
-            elapsedTime = Math.floor(performance.now()) - startTime;
+            segmentElapsedTime = Math.floor(performance.now()) - startTime;
           }, 100);
         }
         if (volume <= threshold && interval) {
           clearInterval(interval);
-          totalElapsedTime += elapsedTime;
-          console.log(totalElapsedTime);
-          elapsedTime = 0;
+          myElapsedTime += segmentElapsedTime;
+          console.log(myElapsedTime);
+          segmentElapsedTime = 0;
           interval = null;
         }
 
         for (let i = 0; i < simplepeers.length; i++) {
           if (simplepeers[i].hasConnected) {
             simplepeers[i].simplepeer.send(
-              JSON.stringify({ myElapsedTime: totalElapsedTime })
+              JSON.stringify({ myElapsedTime: myElapsedTime })
             );
           }
         }
         resizeVideos();
       }, 200);
+      setInterval(() => {
+        for (const peer of simplepeers) {
+          peer.myElapsedTime += Math.floor(Math.random() * 10);
+        }
+      }, 2000);
 
       // Now setup socket
       setupSocket();
@@ -88,84 +98,21 @@ function calculateVolume(meter) {
 
   return rms;
 }
-//https://github.com/cwilso/volume-meter
-// function createAudioMeter(audioContext, clipLevel, averaging, clipLag) {
-//   const processor = audioContext.createScriptProcessor(512);
-//   processor.onaudioprocess = volumeAudioProcess;
-//   processor.clipping = false;
-//   processor.lastClip = 0;
-//   processor.volume = 0;
-//   processor.clipLevel = clipLevel || 0.98;
-//   processor.averaging = averaging || 0.95;
-//   processor.clipLag = clipLag || 750;
-
-//   // this will have no effect, since we don't copy the input to the output,
-//   // but works around a current Chrome bug.
-//   processor.connect(audioContext.destination);
-
-//   processor.checkClipping = function () {
-//     if (!this.clipping) {
-//       return false;
-//     }
-//     if (this.lastClip + this.clipLag < window.performance.now()) {
-//       this.clipping = false;
-//     }
-//     return this.clipping;
-//   };
-
-//   processor.shutdown = function () {
-//     this.disconnect();
-//     this.onaudioprocess = null;
-//   };
-
-//   return processor;
-// }
-
-// function volumeAudioProcess(event) {
-//   const buf = event.inputBuffer.getChannelData(0);
-//   const bufLength = buf.length;
-//   let sum = 0;
-//   let x;
-
-//   // Do a root-mean-square on the samples: sum up the squares...
-//   for (var i = 0; i < bufLength; i++) {
-//     x = buf[i];
-//     if (Math.abs(x) >= this.clipLevel) {
-//       this.clipping = true;
-//       this.lastClip = window.performance.now();
-//     }
-//     sum += x * x;
-//   }
-
-//   // ... then take the square root of the sum.
-//   const rms = Math.sqrt(sum / bufLength);
-
-//   // Now smooth this out with the averaging factor applied
-//   // to the previous sample - take the max here because we
-//   // want "fast attack, slow release."
-//   this.volume = Math.max(rms, this.volume * this.averaging);
-//   this.mappedVolume = Math.floor(mapRange(this.volume, 0, 1, 0, 50));
-//   //document.getElementById("myAudioValue").innerHTML = this.mappedVolume;
-//   myVolume = this.mappedVolume;
-//   if (myVolume > 3) {
-//     mySpokenFor += myVolume;
-//     for (let i = 0; i < simplepeers.length; i++) {
-//       if (simplepeers[i].hasConnected) {
-//         simplepeers[i].simplepeer.send(JSON.stringify({ myVolume: myVolume }));
-//       }
-//     }
-//     resizeVideos();
-//   }
-// }
-
-// function mapRange(value, a, b, c, d) {
-//   // first map value from (a..b) to (0..1)
-//   value = (value - a) / (b - a);
-//   // then map it from (0..1) to (c..d) and return it
-//   return c + value * (d - c);
-// }
 
 function resizeVideos() {
+  // for (let i = 0; i < simplepeers.length; i++) {}
+
+  let total =
+    myElapsedTime +
+    simplepeers.reduce((acc, curr) => {
+      return acc + curr.myElapsedTime;
+    }, 0);
+
+  /* Pseudo Code:
+  assign ratios to everybody in simple peer list
+  scale their videos accordingly
+  
+  */
   // const scale = d3.scalePow().exponent(0.8).domain([0, 1]).range([10, 1000]);
   // let total =
   //   mySpokenFor +
@@ -289,7 +236,7 @@ class SimplePeerWrapper {
 
     this.peerVideo = null;
 
-    this.spokenFor = 0;
+    this.myElapsedTime = 0;
 
     this.hasConnected = false;
 
@@ -302,7 +249,6 @@ class SimplePeerWrapper {
     this.simplepeer.on("connect", () => {
       console.log("CONNECT");
       this.hasConnected = true;
-      //console.log(this.simplepeer);
 
       // Let's give them our stream
       this.simplepeer.addStream(stream).catch(console.log("NOT STREAMING"));
@@ -312,8 +258,6 @@ class SimplePeerWrapper {
 
     // Stream coming in to us
     this.simplepeer.on("stream", (stream) => {
-      //console.log(stream.getAudioTracks());
-
       this.peerStream = stream;
       let peerVideo = document.createElement("video");
       peerVideo.id = this.socket_id;
@@ -330,8 +274,8 @@ class SimplePeerWrapper {
     });
 
     this.simplepeer.on("data", (data) => {
-      const { myVolume } = JSON.parse(data);
-      this.spokenFor += myVolume;
+      const { myElapsedTime } = JSON.parse(data);
+      this.myElapsedTime += myElapsedTime;
       resizeVideos();
     });
   }
