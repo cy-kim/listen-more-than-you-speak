@@ -7,12 +7,11 @@ This is an alternative video calling platform. The longer you speak, the bigger 
 
 
 
-
-Deployment is currently down since Heroku's end to its free service.
+Check out the live deployment [here](www.listen-more-than-you-speak.com)
 
 
 # Stack
-WebRTC (Simple Peer lib), Socket.io, Node (Express), JS, HTML, CSS, Heroku.
+WebRTC (Simple Peer lib), Socket.io, Node (Express), JS, HTML, CSS, AWS Lightsail.
 
 # Notes
 
