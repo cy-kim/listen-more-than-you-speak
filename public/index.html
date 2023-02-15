@@ -2,26 +2,35 @@
   <head>
     <link rel="icon" type="image/png" href="favicon.png" />
     <link rel="stylesheet" type="text/css" href="css/style.css" />
-    <script src="simplepeer.min.js"></script>
-    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
-    <script src="https://d3js.org/d3-array.v2.min.js"></script>
-    <script src="https://d3js.org/d3-color.v2.min.js"></script>
-    <script src="https://d3js.org/d3-format.v2.min.js"></script>
-    <script src="https://d3js.org/d3-interpolate.v2.min.js"></script>
-    <script src="https://d3js.org/d3-time.v2.min.js"></script>
-    <script src="https://d3js.org/d3-time-format.v3.min.js"></script>
-    <script src="https://d3js.org/d3-scale.v3.min.js"></script>
-    <script type="text/javascript" src="js/index.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap"
+      rel="stylesheet"
+    />
   </head>
 
   <body>
-    <video
-      id="myvideo"
-      width="300"
-      height="300"
-      muted
-      class="peervideo"
-    ></video>
-    <audio id="myAudio" controls autoplay></audio>
+    <h1>Listen More Than You Speak</h1>
+    <h2>Browser-based video conferencing with a twist.</h2>
+    <img src="demo.gif" alt="demonstration gif" id="demoimage" />
+    <div id="flex">
+      <div>
+        Be mindful of how long you are speaking -- your video will get larger
+        the longer you speak.
+      </div>
+      <small>(camera and microphone required for this experience)</small>
+      <a href="p2p.html">Enter</a>
+    </div>
+
+    <footer>
+      <small>
+        <a href="https://github.com/cy-kim/listen-more-than-you-speak"
+          >Github</a
+        >
+        // Created by
+        <a href="https://www.cy-kim.com" target="_blank">Cy Kim</a> -- 2022.
+      </small>
+    </footer>
   </body>
 </html>

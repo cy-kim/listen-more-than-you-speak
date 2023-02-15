@@ -1,3 +1,18 @@
+body {
+  display: block;
+  position: relative;
+  text-align: center;
+  font-family: "Roboto Mono", monospace;
+}
+button {
+  display: block;
+}
+image {
+  display: block;
+}
+h1 {
+  text-decoration: underline;
+}
 .peerDiv {
   z-index: 500;
 }
@@ -9,23 +24,6 @@
   top: -1000px;
 }
 
-#bgCanvas {
-  position: absolute;
-  z-index: 0;
-  top: 0px;
-  left: 0px;
-  width: 100%;
-  height: 100%;
-}
-#bgCanvas {
-  position: absolute;
-  z-index: -1;
-  top: 0px;
-  left: 0px;
-  width: 100%;
-  height: 100%;
-}
-
 #audioValue {
   z-index: 2000;
 }
@@ -34,4 +32,25 @@
   clip-path: circle(50%);
   object-fit: cover;
   transition: 0.1s ease;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 2.5rem;
+}
+
+#flex {
+  top: 60%;
+  display: flex;
+  white-space: pre-line;
+  flex-direction: column;
+  justify-content: space-around;
+  height: 20vh;
+}
+
+#demoimage {
+  width: 500px;
+  outline: black solid 1px;
 }

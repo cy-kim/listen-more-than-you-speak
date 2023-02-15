@@ -30,6 +30,16 @@ let peers = [];
 // WebSockets work with the HTTP server
 var io = require("socket.io").listen(httpServer);
 
+
+/*Redirect if there is no www*/
+// app.get('/*', function(req, res, next) {
+//   if (req.headers.host.match(/^www/) !== null ) {
+//     res.redirect('http://' + req.headers.host.replace(/^www\./, '') + req.url);
+//   } else {
+//     next();     
+//   }
+// })
+
 // Register a callback function to run when we have an individual connection
 // This is run for each individual user that connects
 io.sockets.on(
