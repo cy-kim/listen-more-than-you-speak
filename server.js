@@ -8,7 +8,6 @@ import express from "express";
 
 var app = express();
 // Tell Express to look in the "public" folder for any files first
-console.log("latest");
 // app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.static("public"));
 

@@ -65,12 +65,12 @@ window.addEventListener("load", function () {
         resizeVideos(myElapsedTime);
       }, 2000);
     })
-    .catch(function (err) {
+    .catch((err) => {
       alert(err);
     });
 });
 
-function calculateVolume(meter) {
+const calculateVolume = (meter) => {
   const bufferLength = meter.frequencyBinCount;
   const dataArray = new Uint8Array(bufferLength);
   meter.getByteTimeDomainData(dataArray);
@@ -81,4 +81,4 @@ function calculateVolume(meter) {
   const rms = Math.sqrt(sum / bufferLength);
 
   return rms;
-}
+};
