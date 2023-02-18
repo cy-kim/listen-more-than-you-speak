@@ -1,17 +1,15 @@
 <html>
   <head>
-    <link rel="icon" type="image/png" href="favicon.png" />
-    <link rel="stylesheet" type="text/css" href="css/style.css" />
-    <script src="simplepeer.min.js"></script>
+    <!--served by the Socket.IO server, which is part of the socket.io Node.js package.-->
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
-    <script src="https://d3js.org/d3-array.v2.min.js"></script>
-    <script src="https://d3js.org/d3-color.v2.min.js"></script>
-    <script src="https://d3js.org/d3-format.v2.min.js"></script>
-    <script src="https://d3js.org/d3-interpolate.v2.min.js"></script>
-    <script src="https://d3js.org/d3-time.v2.min.js"></script>
-    <script src="https://d3js.org/d3-time-format.v3.min.js"></script>
-    <script src="https://d3js.org/d3-scale.v3.min.js"></script>
-    <script type="text/javascript" src="js/index.js"></script>
+    <script src="/js/simplepeer.min.js"></script>
+    <!-- <link rel="icon" type="image/png" href="favicon.png" /> -->
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script type="module" src="/js/setupSocket.js"></script>
+    <script type="module" src="/js/resizeVideos.js"></script>
+    <script type="module" defer src="/js/simplePeerWrapper.js"></script>
+    <script type="module" src="/js/index.js"></script>
+
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap"
       rel="stylesheet"

@@ -1,21 +1,24 @@
 // We need the file system here
-var fs = require("fs");
-
+import fs from "fs";
+import socket from "socket.io";
+// Here is the actual HTTP server
+import { createServer } from "http";
 // Express is a node module for building HTTP servers
-var express = require("express");
+import express from "express";
+
 var app = express();
 // Tell Express to look in the "public" folder for any files first
+console.log("latest");
+// app.use(express.static(path.join(__dirname, "/public")));
 app.use(express.static("public"));
+
 // If the user just goes to the "route" / then run this function
 app.get("/", function (req, res) {
   res.send("Hello World!");
 });
 
-// Here is the actual HTTP server
-var http = require("http");
-
 // We pass in the Express object and the options object
-var httpServer = http.createServer(app);
+var httpServer = createServer(app);
 
 // Default HTTPS port
 httpServer.listen(process.env.PORT || 7000);
@@ -28,15 +31,14 @@ let peers = [];
 
 // WebSocket Portion
 // WebSockets work with the HTTP server
-var io = require("socket.io").listen(httpServer);
-
+var io = socket.listen(httpServer);
 
 /*Redirect if there is no www*/
 // app.get('/*', function(req, res, next) {
 //   if (req.headers.host.match(/^www/) !== null ) {
 //     res.redirect('http://' + req.headers.host.replace(/^www\./, '') + req.url);
 //   } else {
-//     next();     
+//     next();
 //   }
 // })
 
