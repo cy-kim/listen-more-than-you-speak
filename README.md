@@ -9,7 +9,7 @@ This is an alternative video calling platform. The longer you speak, the bigger 
 
 
 
-Check out the live deployment [here](www.listen-more-than-you-speak.com)
+Check out the live deployment [here](https://www.listen-more-than-you-speak.com)
 
 
 # Stack
