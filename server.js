@@ -1,5 +1,6 @@
-// We need the file system here
-import fs from "fs";
+import { fileURLToPath } from "url";
+import path from "path";
+
 import socket from "socket.io";
 // Here is the actual HTTP server
 import { createServer } from "http";
@@ -8,11 +9,13 @@ import express from "express";
 
 var app = express();
 // Tell Express to look in the "public" folder for any files first
-// app.use(express.static(path.join(__dirname, "/public")));
-app.use(express.static("public"));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+app.use(express.static(path.join(__dirname, "/public")));
+// app.use(express.static("public"));
 
 // If the user just goes to the "route" / then run this function
-app.get("/", function (req, res) {
+app.get("/health", function (req, res) {
   res.send("Hello World!");
 });
 
